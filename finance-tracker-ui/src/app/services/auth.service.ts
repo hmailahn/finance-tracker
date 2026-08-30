@@ -8,7 +8,7 @@ import { AuthResponse, LoginRequest, RegisterRequest, AuthUser } from '../models
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private baseUrl = 'http://localhost:8080/api/auth';
+  private baseUrl = 'https://finance-tracker-production-bfee.up.railway.app/api/auth';
 
   currentUser = signal<AuthUser | null>(this.loadUser());
 

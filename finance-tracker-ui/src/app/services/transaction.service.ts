@@ -6,7 +6,7 @@ import { Transaction } from '../models/transaction.model';
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/api/transactions';
+  private baseUrl = 'https://finance-tracker-production-bfee.up.railway.app/api/transactions';
 
   getAll(): Observable<Transaction[]> {
     return this.http.get<Transaction[]>(this.baseUrl);
