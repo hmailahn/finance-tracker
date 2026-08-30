@@ -1,88 +1,150 @@
 # Finance Tracker
 
-A personal finance tracker built with Angular + Spring Boot.
+A full-stack personal finance tracking application built with Angular and Spring Boot. Users can register, log in, and manage their income and expenses with real-time spending charts and category filtering.
+
+**Live demo:** _coming soon_  
+**Backend repo:** _this repo_
+
+---
+
+## Screenshots
+
+> Add screenshots here once deployed — a picture of the dashboard with the spending chart goes a long way.
+
+---
+
+## Features
+
+- **User authentication** — JWT-based register and login, per-user data isolation
+- **Transaction management** — add, edit, and delete income and expense transactions
+- **Spending chart** — bar chart showing spending broken down by category
+- **Category filter** — filter the transaction list by category
+- **Summary dashboard** — live income, expenses, and net balance totals
+- **Responsive UI** — clean, minimal design built with Angular and SCSS
+
+---
+
+## Tech stack
+
+**Frontend**
+- Angular 19 (standalone components, signals)
+- TypeScript
+- Chart.js + ng2-charts
+- SCSS
+
+**Backend**
+- Java 21
+- Spring Boot 4
+- Spring Security + JWT (jjwt)
+- Spring Data JPA + Hibernate
+- PostgreSQL
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 18+
+- Angular CLI (`npm install -g @angular/cli`)
+- Java 21+
+- PostgreSQL 16+
+- Maven
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/hmailahn/finance-tracker.git
+cd finance-tracker
+```
+
+### 2. Set up the database
+
+Create a PostgreSQL database:
+
+```sql
+CREATE DATABASE finance_tracker;
+```
+
+### 3. Configure the backend
+
+Open `backend/src/main/resources/application.properties` and update the database password:
+
+```properties
+spring.datasource.password=YOUR_POSTGRES_PASSWORD
+```
+
+### 4. Run the backend
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+The API will be available at `http://localhost:8080`.
+
+### 5. Run the frontend
+
+```bash
+cd finance-tracker-ui
+npm install
+ng serve
+```
+
+Open `http://localhost:4200` in your browser.
+
+### 6. Create an account
+
+Go to `http://localhost:4200/register` and create your first account. You'll be redirected to the dashboard automatically.
+
+---
+
+## API endpoints
+
+| Method | Endpoint | Description | Auth required |
+|--------|----------|-------------|---------------|
+| POST | `/api/auth/register` | Create a new account | No |
+| POST | `/api/auth/login` | Log in and receive a JWT | No |
+| GET | `/api/transactions` | Get all transactions for the logged-in user | Yes |
+| POST | `/api/transactions` | Create a new transaction | Yes |
+| PUT | `/api/transactions/{id}` | Update a transaction | Yes |
+| DELETE | `/api/transactions/{id}` | Delete a transaction | Yes |
+
+---
 
 ## Project structure
 
 ```
 finance-tracker/
-  frontend/          ← Angular app (copy files into your ng new project)
-  backend/           ← Spring Boot app (copy files into your Spring Initializr project)
-  README.md
+  finance-tracker-ui/          # Angular frontend
+    src/app/
+      core/                    # Auth interceptor and route guard
+      features/
+        auth/                  # Login and register components
+        dashboard/             # Spending chart component
+        transactions/          # Transaction list component
+      models/                  # TypeScript interfaces
+      services/                # Auth and transaction HTTP services
+  backend/                     # Spring Boot backend
+    src/main/java/com/financetracker/
+      config/                  # Security, JWT, CORS config
+      controller/              # REST controllers
+      model/                   # JPA entities
+      repository/              # Spring Data repositories
 ```
 
-## Setup
+---
 
-### 1. Start PostgreSQL
-```bash
-docker run --name finance-db \
-  -e POSTGRES_DB=finance_tracker \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=yourpassword \
-  -p 5432:5432 \
-  -d postgres:16
-```
+## Roadmap
 
-### 2. Backend
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-Visit http://localhost:8080/api/transactions — you should see 5 seeded transactions.
+- [ ] Budget tracking — set monthly limits per category with progress bars
+- [ ] Recurring transactions — auto-populate monthly bills
+- [ ] CSV import — paste in bank exports and auto-categorize
+- [ ] Spending trends — line chart showing expenses over the past 6 months
+- [ ] Deploy to Railway + Netlify
 
-### 3. Frontend
+---
 
-Create the Angular app first if you haven't:
-```bash
-ng new finance-tracker-ui --routing --style=scss --standalone
-cd finance-tracker-ui
-```
+## Author
 
-Then copy the files from `frontend/src/` into your project's `src/` folder.
-
-```bash
-ng serve
-```
-Visit http://localhost:4200
-
-## File copy guide
-
-Copy each file to the matching path in your Angular project:
-
-| File | Destination |
-|------|-------------|
-| frontend/src/app/models/transaction.model.ts | src/app/models/transaction.model.ts |
-| frontend/src/app/services/transaction.service.ts | src/app/services/transaction.service.ts |
-| frontend/src/app/features/transactions/transaction-list.component.ts | src/app/features/transactions/transaction-list.component.ts |
-| frontend/src/app/features/transactions/transaction-list.component.html | src/app/features/transactions/transaction-list.component.html |
-| frontend/src/app/features/transactions/transaction-list.component.scss | src/app/features/transactions/transaction-list.component.scss |
-| frontend/src/app/app.config.ts | src/app/app.config.ts (replace existing) |
-| frontend/src/app/app.routes.ts | src/app/app.routes.ts (replace existing) |
-| frontend/src/app/app.component.ts | src/app/app.component.ts (replace existing) |
-
-Copy each Java file to the matching path in your Spring Boot project:
-
-| File | Destination |
-|------|-------------|
-| backend/src/main/java/.../model/Transaction.java | src/main/java/com/financetracker/model/Transaction.java |
-| backend/src/main/java/.../repository/TransactionRepository.java | src/main/java/com/financetracker/repository/TransactionRepository.java |
-| backend/src/main/java/.../controller/TransactionController.java | src/main/java/com/financetracker/controller/TransactionController.java |
-| backend/src/main/java/.../config/DataLoader.java | src/main/java/com/financetracker/config/DataLoader.java |
-| backend/src/main/resources/application.properties | src/main/resources/application.properties (replace existing) |
-
-## What you get
-
-- View all transactions sorted by date
-- Add new income or expense transactions
-- Edit existing transactions
-- Delete transactions
-- Live income / expense / net summary at the top
-- 5 sample transactions seeded on first startup
-
-## Next steps
-
-1. Add category filter dropdown
-2. Add a spending chart (ng2-charts)
-3. Add JWT authentication (Spring Security)
-4. Add budget tracking feature
-5. Introduce NgRx for state management
+Heidi Mailahn — [github.com/hmailahn](https://github.com/hmailahn)
