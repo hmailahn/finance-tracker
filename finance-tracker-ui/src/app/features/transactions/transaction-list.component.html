@@ -1,0 +1,128 @@
+<!-- Nav bar -->
+<nav class="navbar">
+  <div class="nav-left">
+    <span class="nav-logo">Finance Tracker</span>
+  </div>
+  <div class="nav-right">
+    @if (currentUser()) {
+      <span class="nav-user">
+        <i class="nav-avatar">{{ currentUser()!.displayName[0].toUpperCase() }}</i>
+        {{ currentUser()!.displayName }}
+      </span>
+      <button class="btn-logout" (click)="logout()">Sign out</button>
+    }
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Summary strip -->
+  <div class="summary">
+    <div class="stat">
+      <span class="label">Income</span>
+      <strong class="income">{{ totalIncome() | currency }}</strong>
+    </div>
+    <div class="stat">
+      <span class="label">Expenses</span>
+      <strong class="expense">{{ totalExpenses() | currency }}</strong>
+    </div>
+    <div class="stat">
+      <span class="label">Net</span>
+      <strong [class.income]="net() >= 0" [class.expense]="net() < 0">
+        {{ net() | currency }}
+      </strong>
+    </div>
+  </div>
+
+  <!-- Error banner -->
+  @if (error()) {
+    <div class="error-banner">{{ error() }}</div>
+  }
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <h2>Transactions</h2>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select (change)="selectedCategory.set($any($event.target).value)">
+        <option value="All">All categories</option>
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+      <button class="btn-primary" (click)="openForm()">+ Add transaction</button>
+    </div>
+  </div>
+
+  <!-- Add / Edit form -->
+  @if (showForm()) {
+    <div class="form-card">
+      <h3>{{ editingId() ? 'Edit transaction' : 'New transaction' }}</h3>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-row">
+          <label>Description
+            <input formControlName="description" placeholder="e.g. Grocery run" />
+          </label>
+          <label>Amount ($)
+            <input formControlName="amount" type="number" min="0" step="0.01" placeholder="0.00" />
+          </label>
+        </div>
+        <div class="form-row">
+          <label>Category
+            <select formControlName="category">
+              @for (cat of categories; track cat) {
+                <option [value]="cat">{{ cat }}</option>
+              }
+            </select>
+          </label>
+          <label>Type
+            <select formControlName="type">
+              <option value="EXPENSE">Expense</option>
+              <option value="INCOME">Income</option>
+            </select>
+          </label>
+          <label>Date
+            <input formControlName="date" type="date" />
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="form.invalid">
+            {{ editingId() ? 'Save changes' : 'Add transaction' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <p class="loading">Loading transactions...</p>
+  }
+
+  <!-- Transaction list -->
+  @if (!loading()) {
+    <div class="txn-list">
+      @for (txn of filteredTransactions(); track txn.id) {
+        <div class="txn-row" [class.is-expense]="txn.amount < 0">
+          <div class="txn-meta">
+            <span class="txn-desc">{{ txn.description }}</span>
+            <span class="txn-cat">{{ txn.category }}</span>
+          </div>
+          <div class="txn-right">
+            <span class="txn-amount" [class.income]="txn.amount > 0" [class.expense]="txn.amount < 0">
+              {{ txn.amount | currency }}
+            </span>
+            <span class="txn-date">{{ txn.date | date:'mediumDate' }}</span>
+            <div class="txn-actions">
+              <button class="btn-ghost-sm" (click)="openForm(txn)">Edit</button>
+              <button class="btn-danger-sm" (click)="delete(txn.id!)">Delete</button>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <p class="empty">No transactions yet. Add one above.</p>
+      }
+    </div>
+  }
+
+</div>
