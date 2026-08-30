@@ -4,7 +4,6 @@ buildCommand = "./mvnw clean package -DskipTests"
 
 [deploy]
 startCommand = "java -jar target/*.jar"
-healthcheckPath = "/api/auth/login"
 
 [nixpacks]
-javaVersion = "21"
+aptPkgs = ["openjdk-21-jdk"]
