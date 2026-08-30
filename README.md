@@ -2,7 +2,7 @@
 
 A full-stack personal finance tracking application built with Angular and Spring Boot. Users can register, log in, and manage their income and expenses with real-time spending charts and category filtering.
 
-**Live demo:** https://finance-tracker-heidi.netlify.app_  
+**Live demo:** https://finance-tracker-heidi.netlify.app
 **Backend repo:** _this repo_
 
 ---
